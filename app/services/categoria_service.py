@@ -16,17 +16,50 @@ def add_categoria(db: Session, categoria: Categoria):
     except Exception as e:
         raise DatabaseError(f"Erro ao salvar categoria: {str(e)}")
 
-# TODO - Implementar atualização de categorias
 def update_categoria(db: Session, id_categoria: int, categoria: Categoria):
     try:
-        print("Teste")
+        result = db.execute(text(
+            "UPDATE categoria "
+            "SET descricao = :descricao "
+            "WHERE id_categoria = :id_categoria"
+        ), {
+            "descricao": categoria.descricao,
+            "id_categoria": id_categoria
+        })
+        db.commit()
+        return result.rowcount > 0 
     except Exception as e:
         raise DatabaseError(f"Erro ao atualizar categoria: {str(e)}")
 
-# TODO - Implementar busca de categorias
 def get_categorias(db: Session, where: str = None, limit: int = 100, offset: int = 0):
     try:
-        print("Teste")
+        base_query = """
+            SELECT 
+                id_categoria, 
+                regexp_replace(COALESCE(descricao, ''), '[^a-zA-Z0-9À-ÿáéíóúãõç ]', '', 'g') AS descricao
+            FROM categoria 
+        """
+
+        where_clause = []
+        parameters = {}
+
+        if where:
+            where_clause.append("unaccent(lower(descricao)) LIKE unaccent(lower(:where))")
+            parameters["where"] = f"%{where}%"
+
+        if where_clause:
+            base_query += " WHERE " + " AND ".join(where_clause)
+        
+        base_query += f" LIMIT {limit} OFFSET {offset}"
+        parameters["limit"] = limit
+        parameters["offset"] = offset
+
+        result = db.execute(text(base_query), parameters)
+
+        return [{
+            "id_categoria": row["id_categoria"],
+            "descricao": row["descricao"],
+        } for row in result]
     except Exception as e:
         raise DatabaseError(f"Erro ao buscar categorias: {str(e)}")
 

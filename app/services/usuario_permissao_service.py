@@ -2,42 +2,31 @@ from sqlalchemy.orm import Session
 from sqlalchemy import text
 from app.utils.string_utils import sanitize_string
 from app.exceptions import DatabaseError
-from app.models import Local
+from app.models import UsuarioPermissao
 
-def add_local(db: Session, local: Local):
+def add_usuario_permissao(db: Session, usuario_permissao: UsuarioPermissao):
     try:
         db.execute(text(
-            "INSERT INTO local (descricao)"
-            "VALUES (:descricao)"
+            "INSERT INTO usuario_permissao (id_usuario, id_permissao)"
+            "VALUES (:id_usuario, :id_permissao)"
         ), {
-            "descricao": local.descricao,
+            "id_usuario": usuario_permissao.id_usuario,
+            "id_permissao": usuario_permissao.id_permissao
         })
         db.commit()  
     except Exception as e:
-        raise DatabaseError(f"Erro ao salvar local: {str(e)}")
+        raise DatabaseError(f"Erro ao salvar permissão de usuário: {str(e)}")
 
-# TODO - Implementar atualização de locais
-def update_local(db: Session, id_local: int, local: Local):
-    try:
-        print("Teste")
-    except Exception as e:
-        raise DatabaseError(f"Erro ao atualizar local: {str(e)}")
-
-# TODO - Implementar busca de locais
-def get_locais(db: Session, where: str = None, limit: int = 100, offset: int = 0):
-    try:
-        print("Teste")
-    except Exception as e:
-        raise DatabaseError(f"Erro ao buscar locais: {str(e)}")
-
-def delete_local_by_id(db: Session, id_local: int):
+def delete_usuario_permissao(db: Session, id_usuario: int, id_permissao: int):
     try:
         result = db.execute(text(
-            "DELETE FROM local WHERE id_local = :id_local"
-        ), {"id_local": id_local})
-
+            "DELETE FROM usuario_permissao "
+            "WHERE id_usuario = :id_usuario AND id_permissao = :id_permissao"
+        ), {
+            "id_usuario": id_usuario,
+            "id_permissao": id_permissao
+        })
         db.commit()
-        
-        return result.rowcount > 0 
+        return result.rowcount > 0
     except Exception as e:
-        raise DatabaseError(f"Erro ao deletar local: {str(e)}")
+        raise DatabaseError(f"Erro ao excluir permissão de usuário: {str(e)}")

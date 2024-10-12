@@ -7,5 +7,6 @@ from .permissao import PermissaoSchema
 from .tipo_combustivel import TipoCombustivelSchema
 from .tipo_despesa import TipoDespesaSchema
 from .tipo_problema import TipoProblemaSchema
+from .usuario_permissao import UsuarioPermissaoSchema
 from .usuario import UsuarioSchema
 from .veiculo import VeiculoSchema

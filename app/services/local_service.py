@@ -5,37 +5,43 @@ from app.exceptions import DatabaseError
 from app.models import Local
 
 def add_local(db: Session, local: Local):
-    db.execute(text(
-        "INSERT INTO local (id_categoria, latitude, longitude, nome, endereco) "
-        "VALUES (:id_categoria, :latitude, :longitude, :nome, :endereco)"
-    ), {
-        "id_categoria": local.id_categoria,
-        "latitude": local.latitude,
-        "longitude": local.longitude,
-        "nome": local.nome,
-        "endereco": local.endereco
-    })
-    db.commit()  
+    try:
+        db.execute(text(
+            "INSERT INTO local (id_categoria, latitude, longitude, nome, endereco) "
+            "VALUES (:id_categoria, :latitude, :longitude, :nome, :endereco)"
+        ), {
+            "id_categoria": local.id_categoria,
+            "latitude": local.latitude,
+            "longitude": local.longitude,
+            "nome": local.nome,
+            "endereco": local.endereco
+        })
+        db.commit()  
+    except Exception as e:
+        raise DatabaseError(f"Erro ao salvar local: {str(e)}")
 
 def update_local(db: Session, id_local: int, local: Local):
-    result = db.execute(text(
-        "UPDATE local "
-        "SET id_categoria = :id_categoria, "
-        "latitude = :latitude, "
-        "longitude = :longitude, "
-        "nome = :nome, "
-        "endereco = :endereco "
-        "WHERE id_local = :id_local"
-    ), {
-        "id_categoria": local.id_categoria,
-        "latitude": local.latitude,
-        "longitude": local.longitude,
-        "nome": local.nome,
-        "endereco": local.endereco,
-        "id_local": id_local
-    })
-    db.commit()
-    return result.rowcount > 0 
+    try:
+        result = db.execute(text(
+            "UPDATE local "
+            "SET id_categoria = :id_categoria, "
+            "latitude = :latitude, "
+            "longitude = :longitude, "
+            "nome = :nome, "
+            "endereco = :endereco "
+            "WHERE id_local = :id_local"
+        ), {
+            "id_categoria": local.id_categoria,
+            "latitude": local.latitude,
+            "longitude": local.longitude,
+            "nome": local.nome,
+            "endereco": local.endereco,
+            "id_local": id_local
+        })
+        db.commit()
+        return result.rowcount > 0 
+    except Exception as e:
+        raise DatabaseError(f"Erro ao atualizar local: {str(e)}")
 
 def get_locals(db: Session, where: str = None, limit: int = 100, offset: int = 0):
     try:
@@ -47,8 +53,7 @@ def get_locals(db: Session, where: str = None, limit: int = 100, offset: int = 0
                 regexp_replace(COALESCE(endereco, ''), '[^a-zA-Z0-9À-ÿáéíóúãõç ]', '', 'g') AS endereco,
                 latitude, 
                 longitude
-            FROM 
-                local 
+            FROM local 
         """
         
         where_clause = []
@@ -117,8 +122,11 @@ def get_local_by_id(db: Session, id_local: int):
 
 
 def delete_local_by_id(db: Session, id_local: int):
-    result = db.execute(text(
-        "DELETE FROM local WHERE id_local = :id_local"
-    ), {"id_local": id_local})
-    db.commit()
-    return result.rowcount > 0 
+    try:
+        result = db.execute(text(
+            "DELETE FROM local WHERE id_local = :id_local"
+        ), {"id_local": id_local})
+        db.commit()
+        return result.rowcount > 0 
+    except Exception as e:
+        raise DatabaseError(f"Erro ao deletar permissão: {str(e)}")

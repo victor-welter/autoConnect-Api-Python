@@ -16,17 +16,50 @@ def add_tipo_problema(db: Session, tipo_problema: TipoProblema):
     except Exception as e:
         raise DatabaseError(f"Erro ao salvar tipo de problema: {str(e)}")
 
-# TODO - Implementar atualização de tipos de problema
 def update_tipo_problema(db: Session, id_tipo_problema: int, tipo_problema: TipoProblema):
     try:
-        print("Teste")
+        result = db.execute(text(
+            "UPDATE tipo_problema "
+            "SET descricao = :descricao "
+            "WHERE id_tipo_problema = :id_tipo_problema"
+        ), {
+            "descricao": tipo_problema.descricao,
+            "id_tipo_problema": id_tipo_problema
+        })
+        db.commit()
+        return result.rowcount > 0
     except Exception as e:
         raise DatabaseError(f"Erro ao atualizar tipo de problema: {str(e)}")
 
-# TODO - Implementar busca de tipos de problema
 def get_tipos_problema(db: Session, where: str = None, limit: int = 100, offset: int = 0):
     try:
-        print("Teste")
+        base_query = """
+            SELECT 
+                id_tipo_problema, 
+                regexp_replace(COALESCE(descricao, ''), '[^a-zA-Z0-9À-ÿáéíóúãõç ]', '', 'g') AS descricao
+            FROM tipo_problema 
+        """
+
+        where_clause = []
+        parameters = {}
+
+        if where:
+            where_clause.append("unaccent(lower(descricao)) LIKE unaccent(lower(:where))")
+            parameters["where"] = f"%{where}%"
+
+        if where_clause:
+            base_query += " WHERE " + " AND ".join(where_clause)
+        
+        base_query += f" LIMIT {limit} OFFSET {offset}"
+        parameters["limit"] = limit
+        parameters["offset"] = offset
+
+        result = db.execute(text(base_query), parameters)
+
+        return [{
+            "id_tipo_problema": row["id_tipo_problema"],
+            "descricao": row["descricao"]
+        } for row in result]
     except Exception as e:
         raise DatabaseError(f"Erro ao buscar tipos de problema: {str(e)}")
 
