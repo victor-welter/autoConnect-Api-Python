@@ -6,7 +6,7 @@ from app.exceptions import DatabaseError
 
 router = APIRouter()
 
-@router.post("add_local/", status_code=201)
+@router.post("/add_local", status_code=201)
 async def create_local(local_data: dict, db: Session = Depends(get_db)):
     try:
         add_local(db, local_data)
@@ -19,7 +19,7 @@ async def create_local(local_data: dict, db: Session = Depends(get_db)):
         return {"success": False, "error": str(e)}
 
     
-@router.put("update_local/{id_local}", status_code=200)
+@router.put("/update_local/{id_local}", status_code=200)
 async def update_local_route(id_local: int, local_data: dict, db: Session = Depends(get_db)):
     try:
         updated = update_local(db, id_local, local_data)
