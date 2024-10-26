@@ -61,7 +61,7 @@ def get_usuarios(db: Session, where: str = None, limit: int = 100, offset: int =
     except Exception as e:
         raise DatabaseError(f"Erro ao buscar usuários: {str(e)}")
 
-def get_usuario_by_id(db: Session, id_usuario: int):
+def get_usuario_by_email(db: Session, email: str):
     try:
         result = db.execute(text(
             "SELECT "
@@ -70,13 +70,13 @@ def get_usuario_by_id(db: Session, id_usuario: int):
             "email, "
             "senha "
             "FROM usuario "
-            "WHERE id_usuario = :id_usuario"
+            "WHERE email = :email"
         ), {
-            "id_usuario": id_usuario
+            "email": email
         })
         return result.fetchone()
     except Exception as e:
-        raise DatabaseError(f"Erro ao buscar usuário por id: {str(e)}")
+        raise DatabaseError(f"Erro ao buscar usuário por e-mail: {str(e)}")
 
 def delete_usuario(db: Session, id_usuario: int):
     try:

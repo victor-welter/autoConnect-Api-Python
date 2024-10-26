@@ -68,9 +68,7 @@ def delete_marca_by_id(db: Session, id_marca: int):
         result = db.execute(text(
             "DELETE FROM marca WHERE id_marca = :id_marca"
         ), {"id_marca": id_marca})
-
         db.commit()
-        
         return result.rowcount > 0 
     except Exception as e:
         raise DatabaseError(f"Erro ao deletar marca: {str(e)}")

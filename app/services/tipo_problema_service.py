@@ -68,9 +68,7 @@ def delete_tipo_problema_by_id(db: Session, id_tipo_problema: int):
         result = db.execute(text(
             "DELETE FROM tipo_problema WHERE id_tipo_problema = :id_tipo_problema"
         ), {"id_tipo_problema": id_tipo_problema})
-
         db.commit()
-        
         return result.rowcount > 0 
     except Exception as e:
         raise DatabaseError(f"Erro ao deletar tipo de problema: {str(e)}")

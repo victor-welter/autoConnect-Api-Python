@@ -72,9 +72,7 @@ def delete_modelo_by_id(db: Session, id_modelo: int):
         result = db.execute(text(
             "DELETE FROM modelo WHERE id_modelo = :id_modelo"
         ), {"id_modelo": id_modelo})
-
         db.commit()
-        
         return result.rowcount > 0 
     except Exception as e:
         raise DatabaseError(f"Erro ao deletar modelo: {str(e)}")

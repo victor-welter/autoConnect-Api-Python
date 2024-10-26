@@ -68,9 +68,7 @@ def delete_categoria_by_id(db: Session, id_categoria: int):
         result = db.execute(text(
             "DELETE FROM categoria WHERE id_categoria = :id_categoria"
         ), {"id_categoria": id_categoria})
-
         db.commit()
-        
         return result.rowcount > 0 
     except Exception as e:
         raise DatabaseError(f"Erro ao deletar categoria: {str(e)}")

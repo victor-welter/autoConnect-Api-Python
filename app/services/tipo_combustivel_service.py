@@ -68,9 +68,7 @@ def delete_tipo_combustivel_by_id(db: Session, id_tipo_combustivel: int):
         result = db.execute(text(
             "DELETE FROM tipo_combustivel WHERE id_tipo_combustivel = :id_tipo_combustivel"
         ), {"id_tipo_combustivel": id_tipo_combustivel})
-
         db.commit()
-        
         return result.rowcount > 0 
     except Exception as e:
         raise DatabaseError(f"Erro ao deletar tipo de combustível: {str(e)}")
