@@ -4,6 +4,8 @@ from .local import Local
 # from .marca import Marca
 # from .modelo import Modelo
 # from .permissao import Permissao
+# from .porta import Porta
+# from .registro_porta import RegistroPorta
 # from .tipo_combustivel import TipoCombustivel
 # from .tipo_despesa import TipoDespesa
 # from .tipo_problema import TipoProblema
