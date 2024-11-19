@@ -49,17 +49,14 @@ def get_categorias(db: Session, where: str = None, limit: int = 100, offset: int
 
         if where_clause:
             base_query += " WHERE " + " AND ".join(where_clause)
-        
-        base_query += f" LIMIT {limit} OFFSET {offset}"
+
+        base_query += " LIMIT :limit OFFSET :offset"
         parameters["limit"] = limit
         parameters["offset"] = offset
 
-        result = db.execute(text(base_query), parameters)
+        result = db.execute(text(base_query), parameters).mappings()
 
-        return [{
-            "id_categoria": row["id_categoria"],
-            "descricao": row["descricao"],
-        } for row in result]
+        return [dict(row) for row in result]
     except Exception as e:
         raise DatabaseError(f"Erro ao buscar categorias: {str(e)}")
 

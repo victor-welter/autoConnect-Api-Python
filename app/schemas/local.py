@@ -1,7 +1,6 @@
 from pydantic import BaseModel
 
 class LocalSchema(BaseModel):
-    id_local: int
     id_categoria: int
     nome: str
     endereco: str

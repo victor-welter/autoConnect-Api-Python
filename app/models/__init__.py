@@ -1,4 +1,4 @@
-# from .categoria import Categoria
+from .categoria import Categoria
 # from .despesa import Despesa
 from .local import Local
 # from .marca import Marca

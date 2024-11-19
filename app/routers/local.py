@@ -1,13 +1,14 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from app.database import get_db
+from app.schemas.local import LocalSchema
 from app.services.local_service import add_local, update_local, get_locals, get_local_by_id, delete_local_by_id
 from app.exceptions import DatabaseError
 
 router = APIRouter()
 
 @router.post("/add_local", status_code=201)
-async def create_local(local_data: dict, db: Session = Depends(get_db)):
+async def create_local(local_data: LocalSchema, db: Session = Depends(get_db)):
     try:
         add_local(db, local_data)
 
