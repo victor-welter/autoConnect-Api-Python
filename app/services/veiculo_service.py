@@ -65,12 +65,13 @@ def get_veiculos(db: Session, where: str = None, limit: int = 100, offset: int =
         if where_clause:
             base_query += " WHERE " + " AND ".join(where_clause)
         
-        base_query += f" LIMIT {limit} OFFSET {offset}"
+        base_query += " LIMIT :limit OFFSET :offset"
         parameters["limit"] = limit
         parameters["offset"] = offset
 
-        result = db.execute(text(base_query), parameters)
-        return result.fetchall()
+        result = db.execute(text(base_query), parameters).mappings()
+
+        return [dict(row) for row in result]
     except Exception as e:
         raise DatabaseError(f"Erro ao buscar veículos: {str(e)}")
 

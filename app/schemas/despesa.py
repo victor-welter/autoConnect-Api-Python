@@ -14,6 +14,3 @@ class DespesaSchema(BaseModel):
     id_tipo_despesa: int
     id_tipo_combustivel: int
     id_tipo_problema: int
-
-    class Config:
-        orm_mode = True

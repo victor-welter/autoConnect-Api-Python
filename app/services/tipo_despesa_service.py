@@ -50,16 +50,13 @@ def get_tipos_despesa(db: Session, where: str = None, limit: int = 100, offset: 
         if where_clause:
             base_query += " WHERE " + " AND ".join(where_clause)
         
-        base_query += f" LIMIT {limit} OFFSET {offset}"
+        base_query += " LIMIT :limit OFFSET :offset"
         parameters["limit"] = limit
         parameters["offset"] = offset
 
-        result = db.execute(text(base_query), parameters)
+        result = db.execute(text(base_query), parameters).mappings()
 
-        return [{
-            "id_tipo_despesa": row["id_tipo_despesa"],
-            "descricao": row["descricao"]
-        } for row in result]
+        return [dict(row) for row in result]
     except Exception as e:
         raise DatabaseError(f"Erro ao buscar tipos de despesa: {str(e)}")
 

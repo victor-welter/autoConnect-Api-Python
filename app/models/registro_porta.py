@@ -5,6 +5,6 @@ class RegistroPorta(Base):
     __tablename__ = 'registro_porta'
 
     id_registro_porta = Column(Integer, primary_key=True, index=True)
-    id_porta = Column(Integer, index=True)
     estado_porta = Column(String)
     data_hora = Column()
+    id_porta = Column(Integer, index=True)

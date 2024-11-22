@@ -2,42 +2,42 @@ from sqlalchemy.orm import Session
 from sqlalchemy import text
 from app.utils.string_utils import sanitize_string
 from app.exceptions import DatabaseError
-from app.models import TipoCombustivel
+from app.models import Porta
 
-def add_tipo_combustivel(db: Session, tipo_combustivel: TipoCombustivel):
+def add_porta(db: Session, porta: Porta):
     try:
         db.execute(text(
-            "INSERT INTO tipo_combustivel (descricao) "
+            "INSERT INTO porta (descricao)"
             "VALUES (:descricao)"
         ), {
-            "descricao": tipo_combustivel.descricao,
+            "descricao": porta.descricao,
         })
         db.commit()  
     except Exception as e:
-        raise DatabaseError(f"Erro ao salvar tipo de combustível: {str(e)}")
+        raise DatabaseError(f"Erro ao salvar porta: {str(e)}")
 
-def update_tipo_combustivel(db: Session, id_tipo_combustivel: int, tipo_combustivel: TipoCombustivel):
+def update_porta(db: Session, id_porta: int, porta: Porta):
     try:
         result = db.execute(text(
-            "UPDATE tipo_combustivel "
+            "UPDATE porta "
             "SET descricao = :descricao "
-            "WHERE id_tipo_combustivel = :id_tipo_combustivel"
+            "WHERE id_porta = :id_porta"
         ), {
-            "descricao": tipo_combustivel.descricao,
-            "id_tipo_combustivel": id_tipo_combustivel
+            "descricao": porta.descricao,
+            "id_porta": id_porta
         })
         db.commit()
-        return result.rowcount > 0
+        return result.rowcount > 0 
     except Exception as e:
-        raise DatabaseError(f"Erro ao atualizar tipo de combustível: {str(e)}")
+        raise DatabaseError(f"Erro ao atualizar porta: {str(e)}")
 
-def get_tipos_combustivel(db: Session, where: str = None, limit: int = 100, offset: int = 0):
+def get_portas(db: Session, where: str = None, limit: int = 100, offset: int = 0):
     try:
         base_query = """
             SELECT 
-                id_tipo_combustivel, 
+                id_porta, 
                 regexp_replace(COALESCE(descricao, ''), '[^a-zA-Z0-9À-ÿáéíóúãõç ]', '', 'g') AS descricao
-            FROM tipo_combustivel 
+            FROM porta 
         """
 
         where_clause = []
@@ -49,7 +49,7 @@ def get_tipos_combustivel(db: Session, where: str = None, limit: int = 100, offs
 
         if where_clause:
             base_query += " WHERE " + " AND ".join(where_clause)
-        
+
         base_query += " LIMIT :limit OFFSET :offset"
         parameters["limit"] = limit
         parameters["offset"] = offset
@@ -58,14 +58,14 @@ def get_tipos_combustivel(db: Session, where: str = None, limit: int = 100, offs
 
         return [dict(row) for row in result]
     except Exception as e:
-        raise DatabaseError(f"Erro ao buscar tipos de combustível: {str(e)}")
+        raise DatabaseError(f"Erro ao buscar portas: {str(e)}")
 
-def delete_tipo_combustivel_by_id(db: Session, id_tipo_combustivel: int):
+def delete_porta_by_id(db: Session, id_porta: int):
     try:
         result = db.execute(text(
-            "DELETE FROM tipo_combustivel WHERE id_tipo_combustivel = :id_tipo_combustivel"
-        ), {"id_tipo_combustivel": id_tipo_combustivel})
+            "DELETE FROM porta WHERE id_porta = :id_porta"
+        ), {"id_porta": id_porta})
         db.commit()
         return result.rowcount > 0 
     except Exception as e:
-        raise DatabaseError(f"Erro ao deletar tipo de combustível: {str(e)}")
+        raise DatabaseError(f"Erro ao deletar porta: {str(e)}")
