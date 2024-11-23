@@ -22,9 +22,7 @@ def update_registro_porta(db: Session, id_registro_porta: int, registro_porta: R
     try:
         result = db.execute(text(
             "UPDATE registro_porta "
-            "SET estado_porta = :estado_porta, "
-            "data_hora = :data_hora, "
-            "id_porta = :id_porta"
+            "SET estado_porta = :estado_porta, data_hora = :data_hora, id_porta = :id_porta "
             "WHERE id_registro_porta = :registro_porta"
         ), {
             "estado_porta": registro_porta.estado_porta,

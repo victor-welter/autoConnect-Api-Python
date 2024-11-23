@@ -7,14 +7,17 @@ from app.models import Veiculo
 def add_veiculo(db: Session, veiculo: Veiculo):
     try:
         db.execute(text(
-            "INSERT INTO veiculo (placa, id_marca, id_modelo, ano, cor, id_usuario)"
-            "VALUES (:placa, :id_marca, :id_modelo, :ano, :cor, :id_usuario)"
+            "INSERT INTO veiculo (placa, ano, odometro, voltagem_min, voltagem_max, id_marca, id_modelo, id_usuario)"
+            "VALUES (:placa, :ano, :odometro, :voltagem_min, :voltagem_max, :id_marca, :id_modelo, :id_usuario)"
         ), {
             "placa": veiculo.placa,
-            "id_marca": veiculo.id_marca,
-            "id_modelo": veiculo.id_modelo,
             "ano": veiculo.ano,
             "cor": veiculo.cor,
+            "odometro": veiculo.odometro,
+            "voltagem_min": veiculo.voltagem_min,
+            "voltagem_max": veiculo.voltagem_max,
+            "id_marca": veiculo.id_marca,
+            "id_modelo": veiculo.id_modelo,
             "id_usuario": veiculo.id_usuario
         })
         db.commit()  
@@ -25,14 +28,17 @@ def update_veiculo(db: Session, id_veiculo: int, veiculo: Veiculo):
     try:
         result = db.execute(text(
             "UPDATE veiculo "
-            "SET placa = :placa, id_marca = :id_marca, id_modelo = :id_modelo, ano = :ano, cor = :cor, id_usuario = :id_usuario "
+            "SET placa = :placa, ano = :ano, cor = :cor, odometro = :odometro, voltagem_min = :voltagem_min, voltagem_max = :voltagem_max, id_marca = :id_marca, id_modelo = :id_modelo, id_usuario = :id_usuario "
             "WHERE id_veiculo = :id_veiculo"
         ), {
             "placa": veiculo.placa,
-            "id_marca": veiculo.id_marca,
-            "id_modelo": veiculo.id_modelo,
             "ano": veiculo.ano,
             "cor": veiculo.cor,
+            "odometro": veiculo.odometro,
+            "voltagem_min": veiculo.voltagem_min,
+            "voltagem_max": veiculo.voltagem_max,
+            "id_marca": veiculo.id_marca,
+            "id_modelo": veiculo.id_modelo,
             "id_usuario": veiculo.id_usuario,
             "id_veiculo": id_veiculo
         })
@@ -47,10 +53,13 @@ def get_veiculos(db: Session, where: str = None, limit: int = 100, offset: int =
             SELECT 
                 id_veiculo, 
                 placa,
-                id_marca,
-                id_modelo,
                 ano,
                 cor,
+                odometro,
+                voltagem_min,
+                voltagem_max,
+                id_marca,
+                id_modelo,
                 id_usuario
             FROM veiculo 
         """

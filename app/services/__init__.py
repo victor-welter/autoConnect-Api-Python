@@ -45,6 +45,7 @@ from .porta_service import (
     add_porta,
     update_porta,
     get_portas,
+    get_porta_by_id,
     delete_porta_by_id,
 )
 

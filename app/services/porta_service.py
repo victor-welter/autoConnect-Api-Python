@@ -17,19 +17,21 @@ def add_porta(db: Session, porta: Porta):
     except Exception as e:
         raise DatabaseError(f"Erro ao salvar porta: {str(e)}")
 
-def update_porta(db: Session, id_porta: int, porta: Porta):
+def update_porta(db: Session, porta: Porta):
     try:
         result = db.execute(text(
             "UPDATE porta "
-            "SET descricao = :descricao "
-            "hora = :hora"
+            "SET descricao = :descricao, hora = :hora "
             "WHERE id_porta = :id_porta"
         ), {
             "descricao": porta.descricao,
             "hora": porta.hora,
-            "id_porta": id_porta
+            "id_porta": porta.id_porta
         })
         db.commit()
+        
+        print(f"Linhas afetadas: {result.rowcount}")
+        
         return result.rowcount > 0 
     except Exception as e:
         raise DatabaseError(f"Erro ao atualizar porta: {str(e)}")
@@ -39,7 +41,8 @@ def get_portas(db: Session, where: str = None, limit: int = 100, offset: int = 0
         base_query = """
             SELECT 
                 id_porta, 
-                regexp_replace(COALESCE(descricao, ''), '[^a-zA-Z0-9À-ÿáéíóúãõç ]', '', 'g') AS descricao
+                descricao,
+                hora
             FROM porta 
         """
 
@@ -62,6 +65,16 @@ def get_portas(db: Session, where: str = None, limit: int = 100, offset: int = 0
         return [dict(row) for row in result]
     except Exception as e:
         raise DatabaseError(f"Erro ao buscar portas: {str(e)}")
+
+def get_porta_by_id(db: Session, id_porta: int):
+    try:
+        result = db.execute(text(
+            "SELECT id_porta, descricao, hora FROM porta WHERE id_porta = :id_porta"
+        ), {"id_porta": id_porta}).mappings().first()
+
+        return dict(result)
+    except Exception as e:
+        raise DatabaseError(f"Erro ao buscar porta por ID: {str(e)}")
 
 def delete_porta_by_id(db: Session, id_porta: int):
     try:
