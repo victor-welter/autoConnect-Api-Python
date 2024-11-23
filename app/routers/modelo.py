@@ -1,13 +1,14 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from app.database import get_db
+from app.schemas.modelo import ModeloSchema
 from app.services.modelo_service import add_modelo, update_modelo, get_modelos, delete_modelo_by_id
 from app.exceptions import DatabaseError
 
 router = APIRouter()
 
-@router.post("add_modelo/", status_code=201)
-async def create_modelo(modelo_data: dict, db: Session = Depends(get_db)):
+@router.post("/add_modelo", status_code=201)
+async def create_modelo(modelo_data: ModeloSchema, db: Session = Depends(get_db)):
     try:
         add_modelo(db, modelo_data)
 
@@ -18,8 +19,8 @@ async def create_modelo(modelo_data: dict, db: Session = Depends(get_db)):
     except Exception as e:
         return {"success": False, "error": str(e)}
 
-@router.put("update_modelo/{id_modelo}", status_code=200)
-async def update_modelo_route(id_modelo: int, modelo_data: dict, db: Session = Depends(get_db)):
+@router.put("/update_modelo", status_code=200)
+async def update_modelo_route(id_modelo: int, modelo_data: ModeloSchema, db: Session = Depends(get_db)):
     try:
         updated = update_modelo(db, id_modelo, modelo_data)
 
@@ -45,7 +46,7 @@ async def read_modelos(db: Session = Depends(get_db)):
     except Exception as e:
         return {"success": False, "error": str(e)}
 
-@router.delete("/delete_modelo/{id_modelo}", status_code=200)
+@router.delete("/delete_modelo", status_code=200)
 async def delete_modelo(id_modelo: int, db: Session = Depends(get_db)):
     try:
         deleted = delete_modelo_by_id(db, id_modelo)

@@ -1,13 +1,14 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from app.database import get_db
+from app.schemas.marca import MarcaSchema
 from app.services.marca_service import add_marca, update_marca, get_marcas, delete_marca_by_id
 from app.exceptions import DatabaseError
 
 router = APIRouter()
 
-@router.post("add_marca/", status_code=201)
-async def create_marca(marca_data: dict, db: Session = Depends(get_db)):
+@router.post("/add_marca", status_code=201)
+async def create_marca(marca_data: MarcaSchema, db: Session = Depends(get_db)):
     try:
         add_marca(db, marca_data)
 
@@ -18,8 +19,8 @@ async def create_marca(marca_data: dict, db: Session = Depends(get_db)):
     except Exception as e:
         return {"success": False, "error": str(e)}
 
-@router.put("update_marca/{id_marca}", status_code=200)
-async def update_marca_route(id_marca: int, marca_data: dict, db: Session = Depends(get_db)):
+@router.put("/update_marca", status_code=200)
+async def update_marca_route(id_marca: int, marca_data: MarcaSchema, db: Session = Depends(get_db)):
     try:
         updated = update_marca(db, id_marca, marca_data)
 
@@ -45,7 +46,7 @@ async def read_marcas(db: Session = Depends(get_db)):
     except Exception as e:
         return {"success": False, "error": str(e)}
 
-@router.delete("/delete_marca/{id_marca}", status_code=200)
+@router.delete("/delete_marca", status_code=200)
 async def delete_marca(id_marca: int, db: Session = Depends(get_db)):
     try:
         deleted = delete_marca_by_id(db, id_marca)

@@ -6,3 +6,4 @@ class Porta(Base):
 
     id_porta = Column(Integer, primary_key=True, index=True)
     descricao = Column(String)
+    hora = Column(String)

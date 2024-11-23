@@ -1,11 +1,9 @@
+from typing import Optional
 from pydantic import BaseModel
 
 class UsuarioSchema(BaseModel):
-    id_usuario: int
+    id_usuario: Optional[int] = None
     nome: str
     email: str
     senha: str
     data_criacao: str
-
-    class Config:
-        orm_mode = True

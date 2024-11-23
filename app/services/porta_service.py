@@ -7,10 +7,11 @@ from app.models import Porta
 def add_porta(db: Session, porta: Porta):
     try:
         db.execute(text(
-            "INSERT INTO porta (descricao)"
-            "VALUES (:descricao)"
+            "INSERT INTO porta (descricao, hora)"
+            "VALUES (:descricao, :hora)"
         ), {
             "descricao": porta.descricao,
+            "hora": porta.hora,
         })
         db.commit()  
     except Exception as e:
@@ -21,9 +22,11 @@ def update_porta(db: Session, id_porta: int, porta: Porta):
         result = db.execute(text(
             "UPDATE porta "
             "SET descricao = :descricao "
+            "hora = :hora"
             "WHERE id_porta = :id_porta"
         ), {
             "descricao": porta.descricao,
+            "hora": porta.hora,
             "id_porta": id_porta
         })
         db.commit()

@@ -1,13 +1,14 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from app.database import get_db
+from app.schemas.tipo_combustivel import TipoCombustivelSchema
 from app.services.tipo_combustivel_service import add_tipo_combustivel, update_tipo_combustivel, get_tipos_combustivel, delete_tipo_combustivel_by_id
 from app.exceptions import DatabaseError
 
 router = APIRouter()
 
-@router.post("add_tipo_combustivel/", status_code=201)
-async def create_tipo_combustivel(tipo_combustivel_data: dict, db: Session = Depends(get_db)):
+@router.post("/add_tipo_combustivel", status_code=201)
+async def create_tipo_combustivel(tipo_combustivel_data: TipoCombustivelSchema, db: Session = Depends(get_db)):
     try:
         add_tipo_combustivel(db, tipo_combustivel_data)
 
@@ -18,8 +19,8 @@ async def create_tipo_combustivel(tipo_combustivel_data: dict, db: Session = Dep
     except Exception as e:
         return {"success": False, "error": str(e)}
 
-@router.put("update_tipo_combustivel/{id_tipo_combustivel}", status_code=200)
-async def update_tipo_combustivel_route(id_tipo_combustivel: int, tipo_combustivel_data: dict, db: Session = Depends(get_db)):
+@router.put("/update_tipo_combustivel", status_code=200)
+async def update_tipo_combustivel_route(id_tipo_combustivel: int, tipo_combustivel_data: TipoCombustivelSchema, db: Session = Depends(get_db)):
     try:
         updated = update_tipo_combustivel(db, id_tipo_combustivel, tipo_combustivel_data)
 
@@ -45,7 +46,7 @@ async def read_tipos_combustivel(db: Session = Depends(get_db)):
     except Exception as e:
         return {"success": False, "error": str(e)}
     
-@router.delete("/delete_tipo_combustivel/{id_tipo_combustivel}", status_code=200)
+@router.delete("/delete_tipo_combustivel", status_code=200)
 async def delete_tipo_combustivel(id_tipo_combustivel: int, db: Session = Depends(get_db)):
     try:
         deleted = delete_tipo_combustivel_by_id(db, id_tipo_combustivel)

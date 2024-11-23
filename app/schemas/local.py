@@ -1,11 +1,9 @@
+from typing import Optional
 from pydantic import BaseModel
 
 class LocalSchema(BaseModel):
-    id_categoria: int
+    id_categoria: Optional[int] = None
     nome: str
     endereco: str
     latitude: float
     longitude: float
-
-    class Config:
-        orm_mode = True

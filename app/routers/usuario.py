@@ -1,15 +1,16 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from app.database import get_db
+from app.schemas.usuario import UsuarioSchema
 from app.services.usuario_service import add_usuario, update_usuario, get_usuarios, get_usuario_by_email
 from app.exceptions import DatabaseError
 
 router = APIRouter()
 
 @router.post("/add_usuario", status_code=201)
-async def add_usuario(user_data: dict, db: Session = Depends(get_db)):
+async def add_usuario(usuario_data: UsuarioSchema, db: Session = Depends(get_db)):
     try:
-        add_usuario(db, user_data)
+        add_usuario(db, usuario_data)
 
         return {"success": True, "data": "Usuário cadastrado com sucesso."}
     except DatabaseError as e:
@@ -17,10 +18,10 @@ async def add_usuario(user_data: dict, db: Session = Depends(get_db)):
     except Exception as e:
         return {"success": False, "error": str(e)}
 
-@router.put("/update_usuario/{cpf_cnpj}", status_code=200)
-async def update_usuario(cpf_cnpj: str, user_data: dict, db: Session = Depends(get_db)):
+@router.put("/update_usuario", status_code=200)
+async def update_usuario(email: str, usuario_data: UsuarioSchema, db: Session = Depends(get_db)):
     try:
-        updated = update_usuario(db, cpf_cnpj, user_data)
+        updated = update_usuario(db, email, usuario_data)
 
         if not updated:
             raise DatabaseError("Não foi possível atualizar o usuário.")

@@ -1,8 +1,6 @@
+from typing import Optional
 from pydantic import BaseModel
 
 class CategoriaSchema(BaseModel):
-    id_categoria: int
+    id_categoria: Optional[int] = None
     descricao: str
-
-    class Config:
-        orm_mode = True

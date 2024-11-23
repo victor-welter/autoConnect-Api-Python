@@ -1,7 +1,8 @@
+from typing import Optional
 from pydantic import BaseModel
 
 class DespesaSchema(BaseModel):
-    id_despesa: int
+    id_despesa: Optional[int] = None
     data: str
     odometro: float
     preco_unitario: float
