@@ -49,6 +49,13 @@ from .porta_service import (
     delete_porta_by_id,
 )
 
+from .registro_combustivel_service import (
+    add_registro_combustivel,
+    update_registro_combustivel,
+    get_registros_combustivel,
+    delete_registro_combustivel_by_id,
+)
+
 from .registro_porta_service import (
     add_registro_porta,
     update_registro_porta,

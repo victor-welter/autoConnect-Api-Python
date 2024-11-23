@@ -28,7 +28,6 @@ async def update_registro_porta(registro_porta_data: RegistroPortaSchema, db: Se
             raise DatabaseError("Não foi possível atualizar o registro de porta.")
         
         return {"success": True, "data": "Registro de porta atualizado com sucesso."}
-    
     except DatabaseError as e:
         return {"success": False, "error": str(e)}
     except Exception as e:

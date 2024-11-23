@@ -6,6 +6,7 @@ from .marca import MarcaSchema
 from .modelo import ModeloSchema
 from .permissao import PermissaoSchema
 from .porta import PortaSchema
+from .registro_combustivel import RegistroCombustivelSchema
 from .registro_porta import RegistroPortaSchema
 from .tipo_combustivel import TipoCombustivelSchema
 from .tipo_despesa import TipoDespesaSchema
