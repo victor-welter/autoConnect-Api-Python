@@ -5,9 +5,10 @@ from app.models import Usuario
 
 def add_usuario(db: Session, usuario: Usuario):
     try:
+        print(usuario)
         db.execute(text(
-            "INSERT INTO usuario (nome, email, senha)"
-            "VALUES (:nome, :email, :senha)"
+            "INSERT INTO usuario (nome, email, senha, data_criacao)"
+            "VALUES (:nome, :email, :senha, NOW())"
         ), {
             "nome": usuario.nome,
             "email": usuario.email,
@@ -41,7 +42,8 @@ def get_usuarios(db: Session, where: str = None, limit: int = 100, offset: int =
                 id_usuario, 
                 nome,
                 email,
-                senha
+                senha,
+                data_criacao
             FROM usuario 
         """
 
@@ -49,32 +51,47 @@ def get_usuarios(db: Session, where: str = None, limit: int = 100, offset: int =
         parameters = {}
 
         if where:
-            where_clause.append(where)
-        
+            where_clause.append("nome LIKE :where")
+            parameters["where"] = f"%{where}%"
+
         if where_clause:
             base_query += " WHERE " + " AND ".join(where_clause)
 
-        base_query += f" LIMIT {limit} OFFSET {offset}"
+        base_query += " LIMIT :limit OFFSET :offset"
+        parameters["limit"] = limit
+        parameters["offset"] = offset
 
-        result = db.execute(text(base_query), parameters)
-        return result.fetchall()
+        result = db.execute(text(base_query), parameters).mappings()
+
+        return [dict(row) for row in result]
     except Exception as e:
         raise DatabaseError(f"Erro ao buscar usuários: {str(e)}")
 
 def get_usuario_by_email(db: Session, email: str):
     try:
-        result = db.execute(text(
-            "SELECT "
-            "id_usuario, "
-            "nome, "
-            "email, "
-            "senha "
-            "FROM usuario "
-            "WHERE email = :email"
-        ), {
-            "email": email
-        })
-        return result.fetchone()
+        base_query = """
+            SELECT 
+                id_usuario, 
+                nome,
+                email,
+                senha,
+                data_criacao
+            FROM usuario 
+        """
+
+        where_clause = []
+        parameters = {}
+
+        if email:
+            where_clause.append("email = :email")
+            parameters["email"] = f"{email}"
+
+        if where_clause:
+            base_query += " WHERE " + " AND ".join(where_clause)
+
+        result = db.execute(text(base_query), parameters).mappings()
+
+        return [dict(row) for row in result]
     except Exception as e:
         raise DatabaseError(f"Erro ao buscar usuário por e-mail: {str(e)}")
 

@@ -8,7 +8,7 @@ from datetime import datetime
 
 router = APIRouter()
 
-@router.get("/hora_atual", response_model=str)
+@router.get("/hora_atual", response_model=str, status_code=200)
 def hora_atual():
     # Obtém a hora atual e retorna
     hora = datetime.now().strftime("%H:%M:%S")

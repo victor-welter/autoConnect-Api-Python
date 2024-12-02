@@ -6,4 +6,4 @@ class UsuarioSchema(BaseModel):
     nome: str
     email: str
     senha: str
-    data_criacao: str
+    data_criacao: Optional[str] = None

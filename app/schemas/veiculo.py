@@ -7,8 +7,9 @@ class VeiculoSchema(BaseModel):
     placa: str
     cor: str
     odometro: float
-    voltagem_min: float
-    voltagem_max: float
+    capacidade_tanque: Optional[float] = None
+    voltagem_min: Optional[float] = None
+    voltagem_max: Optional[float] = None
     id_marca: int
     id_modelo: int
     id_usuario: int

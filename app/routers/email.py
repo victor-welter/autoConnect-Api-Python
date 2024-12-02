@@ -1,10 +1,10 @@
 from fastapi import APIRouter, HTTPException
 from app.schemas.email import EmailSchema
-from app.services.email_service import enviar_email  # Importe sua função de envio
+from app.services.email_service import enviar_email 
 
 router = APIRouter()
 
-@router.post("/enviar_email")
+@router.post("/enviar_email", status_code=200)
 async def enviar_email_api(email: EmailSchema):
     # Envia o e-mail para cada destinatário
     for destinatario in email.destinatarios_email:

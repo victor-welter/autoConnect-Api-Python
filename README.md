@@ -37,7 +37,7 @@ Antes de começar, você precisará ter o seguinte instalado:
    O parâmetro `--reload` permite que o servidor reinicie automaticamente quando você fizer alterações no código.
 
    ```bash
-   ngrok http 8000 
+   ngrok http --url=in-hideously-sturgeon.ngrok-free.app 8000 
    ```
 
    O ngrok é um serviço que permite acessar a API localmente de forma segura.

@@ -8,7 +8,7 @@ from app.exceptions import DatabaseError
 router = APIRouter()
 
 @router.post("/add_usuario", status_code=201)
-async def add_usuario(usuario_data: UsuarioSchema, db: Session = Depends(get_db)):
+async def create_usuario(usuario_data: UsuarioSchema, db: Session = Depends(get_db)):
     try:
         add_usuario(db, usuario_data)
 
@@ -19,7 +19,7 @@ async def add_usuario(usuario_data: UsuarioSchema, db: Session = Depends(get_db)
         return {"success": False, "error": str(e)}
 
 @router.put("/update_usuario", status_code=200)
-async def update_usuario(email: str, usuario_data: UsuarioSchema, db: Session = Depends(get_db)):
+async def update_usuario_by_id(email: str, usuario_data: UsuarioSchema, db: Session = Depends(get_db)):
     try:
         updated = update_usuario(db, email, usuario_data)
 
@@ -33,9 +33,9 @@ async def update_usuario(email: str, usuario_data: UsuarioSchema, db: Session = 
         return {"success": False, "error": str(e)}
 
 @router.get("/get_usuarios", status_code=200)
-async def get_usuarios(db: Session = Depends(get_db)):
+async def read_usuarios(where: str = None, limit: int = 100, offset: int = 0, db: Session = Depends(get_db)):
     try:
-        usuarios = get_usuarios(db)
+        usuarios = get_usuarios(db, where, limit, offset)
 
         return {"success": True, "data": usuarios}
     except DatabaseError as e:
@@ -43,8 +43,8 @@ async def get_usuarios(db: Session = Depends(get_db)):
     except Exception as e:
         return {"success": False, "error": str(e)}
 
-@router.get("/get_usuario/{email}", status_code=200)
-async def get_usuario_by_email(email: str, db: Session = Depends(get_db)):
+@router.get("/get_usuario", status_code=200)
+async def read_usuario_by_email(email: str, db: Session = Depends(get_db)):
     try:
         user = get_usuario_by_email(db, email)
 
@@ -58,15 +58,18 @@ async def get_usuario_by_email(email: str, db: Session = Depends(get_db)):
         return {"success": False, "error": str(e)}
 
 @router.post("/login", status_code=200)
-async def login(email: str, senha: str, db: Session = Depends(get_db)):
+async def login_usuario(email: str, senha: str, db: Session = Depends(get_db)):
     try:
-        user = get_usuario_by_email(db, email)
-        if not user:
+        print(email, senha)
+        users = get_usuario_by_email(db, email)
+
+        if not users:
             return {"success": False, "error": "Usuário não encontrado."}
-
-        if user.senha != senha:
-            return {"success": False, "error": "CPF/CNPJ ou senha incorretos."}
-
+        
+        user = users[0]
+        if user["senha"] != senha:
+            return {"success": False, "error": "E-mail ou senha incorretos."}
+            
         return {"success": True, "data": user}
     except DatabaseError as e:
         return {"success": False, "error": str(e)}

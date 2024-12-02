@@ -6,7 +6,7 @@ class Usuario(Base):
     __tablename__ = 'usuario'
 
     id_usuario = Column(Integer, primary_key=True, index=True)
-    nome = Column(String, index=True)
-    email = Column(String, unique=True, index=True)
+    nome = Column(String)
+    email = Column(String)
     senha = Column(String)
     data_criacao = Column(DateTime)

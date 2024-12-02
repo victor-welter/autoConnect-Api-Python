@@ -6,13 +6,14 @@ from app.models import RegistroCombustivel
 
 def add_registro_combustivel(db: Session, registro_combustivel: RegistroCombustivel):
     try:
-        db.execute(text(
-            "INSERT INTO registro_combustivel (voltagem, data_hora, id_veiculo)"
-            "VALUES (:voltagem, :data_hora, :id_veiculo)"
+        db.execute(text( 
+            "INSERT INTO registro_combustivel (voltagem, data_hora, id_veiculo, quantidade_combustivel, porcentagem_combustivel)"
+            "VALUES (:voltagem, NOW(), :id_veiculo, :quantidade_combustivel, :porcentagem_combustivel)"
         ), {
             "voltagem": registro_combustivel.voltagem,
-            "data_hora": registro_combustivel.data_hora,
-            "id_veiculo": registro_combustivel.id_veiculo
+            "id_veiculo": registro_combustivel.id_veiculo,
+            "quantidade_combustivel": registro_combustivel.quantidade_combustivel,
+            "porcentagem_combustivel": registro_combustivel.porcentagem_combustivel
         })
         db.commit()  
     except Exception as e:
@@ -22,12 +23,14 @@ def update_registro_combustivel(db: Session, id_registro_combustivel: int, regis
     try:
         result = db.execute(text(
             "UPDATE registro_combustivel "
-            "SET voltagem = :voltagem, data_hora = :data_hora, id_veiculo = :id_veiculo "
+            "SET voltagem = :voltagem, data_hora = :data_hora, id_veiculo = :id_veiculo, quantidade_combustivel = :quantidade_combustivel, porcentagem_combustivel = :porcentagem_combustivel"
             "WHERE id_registro_combustivel = :id_registro_combustivel"
         ), {
             "voltagem": registro_combustivel.voltagem,
             "data_hora": registro_combustivel.data_hora,
             "id_veiculo": registro_combustivel.id_veiculo,
+            "quantidade_combustivel": registro_combustivel.quantidade_combustivel,
+            "porcentagem_combustivel": registro_combustivel.porcentagem_combustivel,
             "id_registro_combustivel": id_registro_combustivel
         })
         db.commit()
@@ -42,7 +45,9 @@ def get_registros_combustivel(db: Session, where: str = None, limit: int = 100, 
                 id_registro_combustivel,
                 voltagem,
                 data_hora,
-                id_veiculo
+                id_veiculo,
+                quantidade_combustivel,
+                porcentagem_combustivel
             FROM registro_combustivel
         """
 
